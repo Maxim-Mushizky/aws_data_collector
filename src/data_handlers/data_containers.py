@@ -43,8 +43,8 @@ class Specs:
 
 @dataclass(frozen=True)
 class Times:
-    launch_time: datetime = field(default=None)
-    usage_operation_update_time: datetime = field(default=None)
+    launch_time: Optional[datetime] = field(default=None)
+    usage_operation_update_time: Optional[datetime] = field(default=None)
 
 
 @dataclass(frozen=True)

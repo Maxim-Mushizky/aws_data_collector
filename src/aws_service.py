@@ -22,7 +22,7 @@ class Service:
             self.__generator = EC2ClientsGenerator()
             self.__data_loader = EC2DataLoader
         else:
-            raise NameError(f"The requested service {service} doesn't exist in list of avilable services")
+            raise NameError(f"The requested service {service} doesnt exist in list of avilable services")
 
     def __generate_for_regions(self) -> 'Service':
         self.__generator.populate_clients_by_available_regions()
@@ -31,6 +31,7 @@ class Service:
     def __load_data(self) -> 'Service':
         self.__data_loader = self.__data_loader.__call__(described_instances=self.__generator.described_instances)
         self.__data_loader.populate_instances_containers()
+
         return self
 
     def populate_data(self) -> 'Service':
