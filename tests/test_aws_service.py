@@ -8,7 +8,7 @@ import pytest
     'zxc',
     'cv',
     'asdad',
-    'si1'
+    'si2'
 ])
 def test_none_existing_instances_not_created(service_name):
     with pytest.raises(NameError):
