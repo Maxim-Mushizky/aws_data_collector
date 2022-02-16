@@ -7,16 +7,28 @@ from botocore.exceptions import (
 )
 
 
-@pytest.mark.client_generator
-def test_singelton_creation(ec2_client_generator: EC2ClientsGenerator):
-    second_instance = EC2ClientsGenerator()
-    assert id(ec2_client_generator) == id(
-        second_instance), f"{ec2_client_generator} and {second_instance} are not the same object"
+@pytest.mark.ec2
+@pytest.mark.parametrize('credentials', [
+    {"aws_access_key_id": "ASDASD", "aws_secret_access_key": "ASDASDasd"},
+    {"aws_access_key_id": None, "aws_secret_access_key": "ASDASDasd"},
+    {"aws_access_key_id": "ASDASD", "aws_secret_access_key": None}
+])
+def test_connect_to_client_by_bad_credentials(ec2_client_generator, credentials):
+    try:
+        ec2_client_generator._connect_to_client_by_region(**credentials)
+    except Exception as e:
+        pytest.fail(f"Test failed and the exception was not caught. details {type(e)}:{e}")
+
+
+@pytest.mark.ec2
+def test_default_region_type(ec2_client_generator):
+    region_name = ec2_client_generator.default_region
+    assert isinstance(region_name, str), f"The default_region propety has to be str, instead it's a value {region_name}"
 
 
 @pytest.mark.ec2
 def test_connection_to_ec2_default(ec2_client_generator: EC2ClientsGenerator):
-    client_connection = ec2_client_generator.connect_to_client_by_region()
+    client_connection = ec2_client_generator._connect_to_client_by_region()
     try:
         client_connection.describe_instances()
     except ClientError:
@@ -31,7 +43,7 @@ def test_connection_to_ec2_default(ec2_client_generator: EC2ClientsGenerator):
     "yy-east-4",
 ])
 def test_connection_to_wrong_region_name(fake_region, ec2_client_generator: EC2ClientsGenerator):
-    client_connection = ec2_client_generator.connect_to_client_by_region(region_name=fake_region)
+    client_connection = ec2_client_generator._connect_to_client_by_region(region_name=fake_region)
     with pytest.raises(EndpointConnectionError):
         client_connection.describe_instances()
 
