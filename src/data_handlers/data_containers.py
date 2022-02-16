@@ -53,7 +53,19 @@ class SecurityGroups:
 
 
 @dataclass(frozen=True)
+class Placement:
+    availability_zone: str = field(default_factory=str)
+
+
+@dataclass(frozen=True)
+class Token:
+    access_key_id: str = field(default="default")
+    secret_access_key: str = field(default="default")
+
+
+@dataclass(frozen=True)
 class EC2Data:
+    token: Token = field(default_factory=Token)
     ids: Optional[Ids] = field(default=None)
     network_settings: Optional[NetworkSettings] = field(default=None)
     platform_details: Optional[PlatformDetails] = field(default=None)
@@ -61,3 +73,4 @@ class EC2Data:
     times: Optional[Times] = field(default=None)
     security_groups: Optional[SecurityGroups] = field(default=None)
     specs: Optional[Specs] = field(default=None)
+    placement: Optional[Placement] = field(default=None)
